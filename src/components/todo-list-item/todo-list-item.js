@@ -21,7 +21,7 @@ export default class TodoListItem extends Component {
 
     const editInput = status === 'editing' ? (
       <form onSubmit={(e) => onSubmitHandler(e)}>
-        <input type="text" className="edit" value={label} onChange={(e) => editInputHandler(id, e.target.value)} />
+        <input type="text" className="edit" value={label} onChange={(e) => editInputHandler(id, e.target.value)} required />
       </form>
     ) : ('');
 
@@ -60,7 +60,7 @@ export default class TodoListItem extends Component {
 
 TodoListItem.propTypes = {
   label: PropTypes.string.isRequired,
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
   date: PropTypes.instanceOf(Date),
 };

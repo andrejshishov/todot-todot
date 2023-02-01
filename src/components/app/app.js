@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { Component } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import NewTodo from '../new-todo';
 import TodoList from '../todo-list/todo-list';
@@ -8,8 +9,6 @@ import Footer from '../footer/footer';
 import './app.css';
 
 export default class App extends Component {
-  maxId = 100;
-
   state = {
     items: [
       this.createTodoItem('First task', ''),
@@ -24,9 +23,8 @@ export default class App extends Component {
       label,
       status,
       date: new Date(),
-      // eslint-disable-next-line no-plusplus
-      id: this.maxId++,
-    }
+      id: uuidv4(),
+    };
   }
 
   addItem = (text) => {
@@ -111,8 +109,7 @@ export default class App extends Component {
 
   onClearCompleted = () => {
     this.setState(({ items }) => {
-      const newArr = [...items];
-      const compArr = newArr.filter((el) => el.status !== 'completed');
+      const compArr = [...items].filter((el) => el.status !== 'completed');
       return {
         items: compArr,
       }

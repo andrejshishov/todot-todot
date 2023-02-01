@@ -19,6 +19,8 @@
         "react/jsx-props-no-spreading": "off",
         "react/react-in-jsx-scope": "off",
         "react/prop-types": 0,
-        "indent": "off"
+        "indent": "off",
+        "class-methods-use-this": "off",
+        "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }]
     }
 }

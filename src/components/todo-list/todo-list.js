@@ -25,7 +25,7 @@ export default class TodoList extends Component {
       key={item.id}
       onDeleted={onDeleted}
       onToggleDone={onToggleDone}
-      onToggleEdit={onToggleEdit}
+      onToggleEdit={ onToggleEdit }
       editInputHandler={editInputHandler}
       onEditSubmit={onEditSubmit}
       />
