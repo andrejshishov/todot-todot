@@ -238,6 +238,22 @@ body {
 	text-decoration: line-through;
 }
 
+.description {
+    position: relative;
+    font-size: 24px;
+    word-break: break-all;
+    display: block;
+    line-height: 1.2;
+    transition: color 0.4s;
+    font-weight: 400;
+    color: #4d4d4d;
+}
+
+.completed {
+    color: #cdcdcd;
+    text-decoration: line-through;
+}
+
 .todo-list li .icon {
 	position: absolute;
 	top: 0;

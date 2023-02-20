@@ -7,10 +7,17 @@ export default class NewTodo extends Component {
   };
 
   onLabelChange = (e) => {
-    this.setState({
-      label: e.target.value,
-    });
-  };
+    if (e.target.value.length === 1) {
+        const label = e.target.value.replace(/^\s*$/, ' ');
+        this.setState({
+            label,
+        });
+    } else {
+        this.setState({
+            label: e.target.value,
+        });
+    }
+};
 
   onSubmit = (e) => {
     e.preventDefault();

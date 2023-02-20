@@ -11,17 +11,17 @@ import './app.css';
 export default class App extends Component {
   state = {
     items: [
-      this.createTodoItem('First task', ''),
-      this.createTodoItem('Second task', ''),
-      this.createTodoItem('Third task', ''),
+     this.createTodoItem('First task'),
+      this.createTodoItem('Second task'),
+      this.createTodoItem('Third task'),
   ],
   filter: 'all',
   };
 
-  createTodoItem(label, status = '') {
+  createTodoItem(label) {
     return {
       label,
-      status,
+      status: false,
       date: new Date(),
       id: uuidv4(),
     };
@@ -54,52 +54,44 @@ export default class App extends Component {
   };
 
   onToggleDone = (id) => {
-    this.setState(({ items }) => ({
-      items: items.map((item) => {
-        if (id === item.id) {
-          const status = item.status === '' ? 'completed' : ''
-          return { ...item, status }
-        }
-        return item;
-      }),
+    this.setState(() => ({
+        items: this.toggleProperty(id, 'status'),
     }));
-  };
+};
 
-  onToggleEdit = (id) => {
-    this.setState(({ items }) => ({
-      items: items.map((item) => {
-        if (item.status === 'editing') {
-          return { ...item, status: '' }
-        }
-        if (item.id === id && item.status !== 'completed') {
-          return { ...item, status: 'editing' }
-        }
-        return item
-      }),
-    }));
+toggleProperty(id, property) {
+  const { items } = this.state;
+  const index = items.findIndex((el) => el.id === id);
+  const oldItem = items[index];
+  const newItem = {
+      ...oldItem,
+      [property]: !oldItem[property],
   };
+  return [
+      ...items.slice(0, index),
+      newItem,
+      ...items.slice(index + 1),
+  ];
+}
 
-  editInputHandler = (id, value) => {
-    this.setState(({ items }) => ({
-      items: items.map((item) => {
-        if (item.id === id) {
-          return { ...item, label: value }
-        }
-        return item
-      }),
-    }));
-  };
+  changeTitle = (id, text) => {
+    this.setState(({ items }) => {
+        const index = items.findIndex((el) => el.id === id);
+        const oldItem = items[index];
 
-  onEditSubmit = (id) => {
-    this.setState(({ items }) => ({
-      items: items.map((item) => {
-        if (item.id === id) {
-          return { ...item, status: '' }
-        }
-        return item
-      }),
-    }));
-  };
+        const newItem = { ...oldItem, label: text };
+
+        const newData = [
+            ...items.slice(0, index),
+            newItem,
+            ...items.slice(index + 1),
+        ];
+
+        return {
+            items: newData,
+        };
+    });
+};
 
   onFilterChange = (value) => {
     this.setState({
@@ -109,7 +101,7 @@ export default class App extends Component {
 
   onClearCompleted = () => {
     this.setState(({ items }) => {
-      const compArr = [...items].filter((el) => el.status !== 'completed');
+      const compArr = [...items].filter((el) => !el.status);
       return {
         items: compArr,
       }
@@ -127,12 +119,10 @@ export default class App extends Component {
       items={ items }
       onDeleted={ this.deleteItem }
       onToggleDone={ this.onToggleDone }
-      onToggleEdit={ this.onToggleEdit }
-      editInputHandler={ this.editInputHandler}
-      onEditSubmit={ this.onEditSubmit }
-      filter={filter}/>
+      filter={filter}
+      changeTitle={this.changeTitle}/>
       <Footer
-      left={items.filter((item) => item.status !== 'completed').length}
+      left={items.filter((item) => item.status === false).length}
       filter={filter}
       onFilterChange={ this.onFilterChange }
       clearCompleted={ this.onClearCompleted }/>

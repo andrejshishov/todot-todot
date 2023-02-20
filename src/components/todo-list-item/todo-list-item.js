@@ -4,63 +4,94 @@ import { Component } from 'react';
 import { formatDistanceToNowStrict } from "date-fns";
 
 export default class TodoListItem extends Component {
+  constructor(props) {
+    super(props);
+    const { label } = this.props;
+    this.state = {
+        labelState: label,
+        edit: false,
+    };
+}
+
+  onLabelChange = (e) => {
+    this.setState({
+        labelState: e.target.value,
+    });
+};
+
+onSubmit = (e) => {
+    const { labelState } = this.state;
+    const { changeTitle } = this.props;
+    e.preventDefault();
+    changeTitle(e.target.id, labelState);
+    this.setState({
+        edit: false,
+    });
+};
+
+handlerClick = () => {
+  const newEdit = true;
+  this.setState({
+      edit: newEdit,
+  });
+};
+
   render() {
     // eslint-disable-next-line object-curly-newline
-    const { label, id, status, date,
+    const { label, id, date,
       onDeleted,
       onToggleDone,
-      onToggleEdit,
-      editInputHandler,
+       status,
       // eslint-disable-next-line object-curly-newline
-      onEditSubmit } = this.props;
+       } = this.props;
 
-    function onSubmitHandler(e) {
-      e.preventDefault();
-      onEditSubmit(id)
+        const { labelState } = this.state;
+        const { edit } = this.state;
+
+        const field = edit ? (
+            <form className='' onSubmit={this.onSubmit} id={id}>
+                <input
+                    type='text'
+                    className='edit'
+                    placeholder='Editing task'
+                    onChange={this.onLabelChange}
+                    value={labelState}
+                    required
+                />
+            </form>
+        ) : (
+            <div className='view'>
+                <input
+                    id={id.toString()}
+                    className='toggle'
+                    type='checkbox'
+                    onChange={onToggleDone}
+                    checked={status}
+
+                />
+                <label htmlFor={id} >
+                    <span className={status ? 'completed description' : 'description' }>{label}</span>
+                    <span className='created'>created {formatDistanceToNowStrict(date)} ago</span>
+                </label>
+                <button
+                    type='button'
+                    className='icon icon-edit float-right'
+                    onClick={this.handlerClick}
+                />
+                <button
+                    type='button'
+                    className='icon icon-destroy float-right'
+                    onClick={() => onDeleted(id)}
+                />
+            </div>
+        );
+
+        return <li className={edit ? 'editing' : ''}>{field}</li>;
     }
-
-    const editInput = status === 'editing' ? (
-      <form onSubmit={(e) => onSubmitHandler(e)}>
-        <input type="text" className="edit" value={label} onChange={(e) => editInputHandler(id, e.target.value)} required />
-      </form>
-    ) : ('');
-
-    return (
-      <li className={status}
-      key={id}>
-      <div className="view">
-      <input className='toggle'
-      type='checkbox'
-      checked={status === 'completed'}
-      onChange={() => onToggleDone(id)}
-      />
-      <label onClick={() => onToggleDone(id)}>
-      <span
-        className="description">
-        {label}
-      </span>
-      <span
-      className='created'>created {formatDistanceToNowStrict(date)} ago</span>
-      </label>
-      <button type="button"
-              className="icon icon-edit"
-              onClick={() => onToggleEdit(id)}
-              >
-      </button>
-      <button type='button'
-              className='icon icon-destroy'
-              onClick={() => onDeleted(id)}>
-      </button>
-      </div>
-      { editInput }
-      </li>
-    )
-  }
 }
 
 TodoListItem.propTypes = {
   label: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
   date: PropTypes.instanceOf(Date),
 };
